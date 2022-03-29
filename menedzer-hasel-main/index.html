@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menedżer haseł</title>
+</head>
+<body onload="init()">
+    <h1>Menedżer haseł</h1>
+    <h2>podaj login i hasło</h2>
+    <input type="text" name="" id="login">
+    <input type="text" name="" id="passwd">
+    <button onclick="addPosition()">Dodaj</button>
+    <div id=LoginPasswdList>
+
+    </div>
+    <script>
+        var password = prompt("Wprowadź hasło"); //logowanie do strony
+        if (password=="1234") {
+        }
+        else 
+        {
+            alert("Niepoprawne hasło"); 
+            window.location.reload();
+        }
+        function init() {
+            showList();
+            window.setTimeout(function () {
+                window.location.reload();
+                    }, 30000);              //zablokowanie po 5 min
+        }
+        function addPosition() {
+            let login = document.getElementById('login').value;
+            let passwd = document.getElementById('passwd').value;
+            let position = login + " // "+passwd;
+            let LoginPasswdList = JSON.parse(window.localStorage.getItem('LoginPasswdList')); 
+            try {
+                LoginPasswdList.push(position);
+            } catch {
+                LoginPasswdList = Array();
+                LoginPasswdList.push(position);
+            }                                     //dodawanie pozycji
+             
+
+            window.localStorage.setItem('LoginPasswdList', JSON.stringify(LoginPasswdList));
+            document.getElementById('login').value = "";
+            document.getElementById('passwd').value = "";
+            showList();
+        }
+        function showList() {
+            let listArray = JSON.parse(window.localStorage.getItem('LoginPasswdList'));
+            if(listArray === null) return;
+            let LoginPasswdList = document.getElementById('LoginPasswdList');
+            let htmlBuffer = "";
+            htmlBuffer += "<ul>";
+            for (let i = 0; i < listArray.length; i++) {                      //lista
+                htmlBuffer += "<li><button onclick=\"removePosition("+i+")\">Usuń</button>" 
+                                + listArray[i] + "</li>";
+            }
+            htmlBuffer += "</ul>";
+            LoginPasswdList.innerHTML = htmlBuffer;
+        }
+        function removePosition(i) {
+            let listArray = JSON.parse(window.localStorage.getItem('LoginPasswdList'));
+            
+            listArray.splice(i, 1);
+                                                  //usuwanie pozycji
+
+            window.localStorage.setItem('LoginPasswdList', JSON.stringify(listArray));
+            showList();
+        }
+    </script>
+    <p>Edycja zapisanego loginu i hasła odbywa się poprzez usunięcie i ponowne dodanie</p>
+</body>
+</html>
